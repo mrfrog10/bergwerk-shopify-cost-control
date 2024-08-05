@@ -42,6 +42,7 @@ def assert_matches_oracle(wb, scenario):
         else:
             assert abs(got - want) < 1e-6, f"{key}: {got} != {want}"
     assert named(wb, "FORECAST_LAUNCH").date() == exp["FORECAST_LAUNCH"]
+    assert named(wb, "FORECAST_END").date() == exp["FORECAST_END"]
     assert named(wb, "INTEGRITY") == "ALL PASS"
     assert not formula_errors(wb), formula_errors(wb)[:5]
 

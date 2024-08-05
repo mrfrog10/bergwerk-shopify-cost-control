@@ -150,6 +150,7 @@ def build(s=BASE, out=OUT):
          s["contract_budget"], EUR),
         ("Schedule GREEN if SPI at least", s["spi_green"], RATIO),
         ("Schedule AMBER if SPI at least", s["spi_amber"], RATIO),
+        ("Aftercare after launch (weeks)", s["aftercare_weeks"], '0'),
     ]
     header(ws, 3, ["Setting", "Value"])
     for i, (k, v, f) in enumerate(rows, start=4):
@@ -179,6 +180,8 @@ def build(s=BASE, out=OUT):
                               "Settings!$B$14")
     name("STATUS_DATE", "Settings", "$B$10")
     name("PLANNED_LAUNCH", "Settings", "$B$9")
+    PLANNED_END, AFTERCARE = "Settings!$B$8", "Settings!$B$15"
+    name("PLANNED_END", "Settings", "$B$8")
 
     # =========================================================== ChangeLog
     cl = wb.create_sheet("ChangeLog")
@@ -633,6 +636,8 @@ def build(s=BASE, out=OUT):
         ("SPI(t) (time-based) = ES / AT", "=H8/H6", RATIO, "SPI_T"),
         ("SPI of testing (WP5)",
          f"=INDEX(EarnedValue!$K${W1}:$K${WN},5)", RATIO, "SPI_WP5"),
+        ("Forecast project end (forecast launch + aftercare weeks)",
+         f"=H12+7*{AFTERCARE}", DATE_FMT, "FORECAST_END"),
     ]
     for k, (lab, f, fmt, nm) in enumerate(items, start=5):
         cell(sc, f"G{k}", lab, bold=(k == 12))
@@ -649,10 +654,46 @@ def build(s=BASE, out=OUT):
                  'is at risk if testing does not speed up."')
     for r in (17, 18):
         sc[f"G{r}"].font = SUB
-    widths(sc, {"A": 12, "B": 14, "C": 14, "D": 14, "E": 9, "F": 3, "G": 42,
-                "H": 14})
+    # plan vs actual / forecast per work package (inputs)
+    ws0 = 21
+    sc[f"A{ws0 - 1}"] = (f'="Plan vs actual / forecast per work package '
+                         f'(as of "&TEXT({STATUS},"d mmm yyyy")&")"')
+    sc[f"A{ws0 - 1}"].font = SEC_FONT
+    header(sc, ws0, ["WP", "Work package", "Planned start", "Planned finish",
+                     "Status at status date", "", "Forecast finish"])
+    for k, (wp, (ps, pf, st, ff)) in enumerate(
+            zip(s["wps"], s["wp_schedule"]), start=ws0 + 1):
+        cell(sc, f"A{k}", wp[0])
+        cell(sc, f"B{k}", wp[1], align="left")
+        cell(sc, f"C{k}", ps, DATE_FMT, inp=True)
+        cell(sc, f"D{k}", pf, DATE_FMT, inp=True)
+        cell(sc, f"E{k}", st, inp=True, align="left")
+        sc.merge_cells(f"E{k}:F{k}")
+        cell(sc, f"G{k}", ff, inp=True, align="left")
+        sc.row_dimensions[k].height = 30
+    k += 1
+    cell(sc, f"A{k}", "Launch")
+    cell(sc, f"B{k}", "Go-live", align="left")
+    cell(sc, f"D{k}", f"={LAUNCH}", DATE_FMT)
+    cell(sc, f"E{k}", f'=TEXT(H10,"0")&" days late (earned schedule)"',
+         align="left")
+    sc.merge_cells(f"E{k}:F{k}")
+    cell(sc, f"G{k}", "=H12", DATE_FMT, align="left")
+    k += 1
+    cell(sc, f"A{k}", "End")
+    cell(sc, f"B{k}", "Project end", align="left")
+    cell(sc, f"C{k}", "=Settings!$B$7", DATE_FMT)
+    cell(sc, f"D{k}", f"={PLANNED_END}", DATE_FMT)
+    cell(sc, f"E{k}", f'=TEXT(H16-{PLANNED_END},"0")&" days after the '
+         f'planned end"', align="left")
+    sc.merge_cells(f"E{k}:F{k}")
+    cell(sc, f"G{k}", "=H16", DATE_FMT, align="left")
+    name("WP_SCHEDULE", "Schedule", f"$A${ws0 + 1}:$G${k}")
+    widths(sc, {"A": 12, "B": 26, "C": 14, "D": 14, "E": 22, "F": 18,
+                "G": 42, "H": 14})
     name("SCHED_TABLE", "Schedule", f"$A$5:$D${lr}")
     FORECAST_LAUNCH, LAG_DAYS = "Schedule!$H$12", "Schedule!$H$10"
+    FORECAST_END = "Schedule!$H$16"
 
     # ============================================================== Checks
     ck = wb.create_sheet("Checks", 9)
@@ -685,6 +726,8 @@ def build(s=BASE, out=OUT):
          f"=ROUND({OVERRUN_PCT},3)", 0.097, PCT1),
         ("Forecast launch date", "planned launch + schedule lag",
          f"={FORECAST_LAUNCH}", date(2024, 8, 29), DATE_FMT),
+        ("Forecast project end", "forecast launch + 6 weeks aftercare",
+         f"={FORECAST_END}", date(2024, 10, 10), DATE_FMT),
     ]
     for k, (m, f, model, exp, fmt) in enumerate(checks, start=5):
         cell(ck, f"A{k}", m)
@@ -867,6 +910,10 @@ def build(s=BASE, out=OUT):
         ("Planned launch", f"={LAUNCH}", DATE_FMT, "Original go-live date"),
         ("Forecast launch", f"={FORECAST_LAUNCH}", DATE_FMT,
          f'="About "&{LAG_DAYS}&" days late (earned schedule)"'),
+        ("Planned project end", f"={PLANNED_END}", DATE_FMT,
+         "End of aftercare in the original plan"),
+        ("Forecast project end", f"={FORECAST_END}", DATE_FMT,
+         f'="Forecast launch + "&{AFTERCARE}&" weeks aftercare"'),
     ]
     for k, (lab, f, fmt, meaning) in enumerate(kpis, start=10):
         cell(db, f"A{k}", lab)

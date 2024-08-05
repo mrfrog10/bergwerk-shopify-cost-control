@@ -58,6 +58,8 @@ def compute(s):
     # a forecast launch cannot lie in the past
     forecast_launch = max(s["launch"] + timedelta(days=lag_days),
                           s["status"] + timedelta(days=1))
+    # aftercare runs a fixed number of weeks after the (forecast) launch
+    forecast_end = forecast_launch + timedelta(weeks=s["aftercare_weeks"])
 
     if overrun > 0:
         cost_rag = "RED"
@@ -74,7 +76,7 @@ def compute(s):
         "RESERVE_LEFT": reserve_left, "CUR_TOTAL": current_total,
         "OVERRUN": overrun, "OVERRUN_PCT": overrun / current_total,
         "ES": es, "AT": at, "LAG_DAYS": lag_days,
-        "FORECAST_LAUNCH": forecast_launch,
+        "FORECAST_LAUNCH": forecast_launch, "FORECAST_END": forecast_end,
         "EAC_OPT": AC + (bac - EV), "EAC_CPI": bac / cpi,
         "EAC_CPISPI": AC + (bac - EV) / (cpi * spi),
         "TCPI_BAC": (bac - EV) / (bac - AC),

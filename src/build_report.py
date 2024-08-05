@@ -37,7 +37,8 @@ if named(wb, "INTEGRITY") != "ALL PASS":
 K = {k: named(wb, k) for k in (
     "STATUS_DATE", "COST_RAG", "SCHED_RAG", "BAC", "PV", "EV", "AC", "CPI",
     "SPI", "EAC", "VAC", "RESERVE_LEFT", "CUR_TOTAL", "OVERRUN",
-    "OVERRUN_PCT", "PLANNED_LAUNCH", "FORECAST_LAUNCH", "LAG_DAYS", "ES",
+    "OVERRUN_PCT", "PLANNED_LAUNCH", "FORECAST_LAUNCH", "LAG_DAYS",
+    "PLANNED_END", "FORECAST_END", "ES",
     "AT", "SPI_T", "SPI_WP5", "EAC_OPT", "EAC_CPI", "EAC_CPISPI", "TCPI_BAC",
     "TCPI_EAC", "COMMITTED", "PENDING_CR")}
 STATUS = K["STATUS_DATE"]
@@ -164,7 +165,9 @@ SCHED_NOTE = (
     f"{K['AT']} months of work: a lag of {K['LAG_DAYS']} days. This moves "
     f"the launch from {d(K['PLANNED_LAUNCH'])} to about "
     f"{d(K['FORECAST_LAUNCH'])}. It assumes the lag does not grow. Testing "
-    f"(WP5) is at SPI {K['SPI_WP5']:.2f}, so the new date is at risk.")
+    f"(WP5) is at SPI {K['SPI_WP5']:.2f}, so the new date is at risk. "
+    f"Aftercare follows the launch, so the project end moves from "
+    f"{d(K['PLANNED_END'])} to about {d(K['FORECAST_END'])}.")
 cr_bits = []
 for cid, _, what, wp, amt, paid, status, phase, _note in CHANGES:
     src = "from the reserve" if paid == "Reserve" else f"paid by {paid}"
@@ -290,7 +293,9 @@ kp = [["Measure", "Value", "Meaning"],
       ["TCPI to finish within budget", f"{K['TCPI_BAC']:.2f}",
        "Efficiency needed on remaining work; not realistic above 1.10"],
       ["Forecast launch", d(K["FORECAST_LAUNCH"]),
-       f"{K['LAG_DAYS']} days after the planned {d(K['PLANNED_LAUNCH'])}"]]
+       f"{K['LAG_DAYS']} days after the planned {d(K['PLANNED_LAUNCH'])}"],
+      ["Forecast project end", d(K["FORECAST_END"]),
+       f"Planned {d(K['PLANNED_END'])}; aftercare follows the launch"]]
 story += [Paragraph("Key figures", H2),
           table(kp, [60 * mm, 24 * mm, W - 84 * mm], right_cols=(1,)),
           Spacer(1, 6),

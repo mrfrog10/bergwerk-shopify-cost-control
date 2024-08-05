@@ -36,6 +36,25 @@ Each build is recalculated in LibreOffice and checked three ways:
 | Expected final cost (EAC) | AC + ETC | **65,800** | vs budget 57,500 (+8,300) |
 | Overrun after reserve | 65,800 − 57,500 − 2,500 | **+5,800** | 9.7% of the EUR 60,000 total |
 | Launch date | earned schedule | **29 Aug 2024** | about 2 weeks after the planned 15 Aug |
+| Project end | launch + 6 weeks aftercare | **~10 Oct 2024** | vs the planned 30 Sep |
+
+### Plan vs actual / forecast (as of 31 Jul 2024)
+
+| Work package | Planned | Status at 31 Jul 2024 | Actual / forecast finish |
+|---|---|---|---|
+| WP1 Discovery and requirements | 1–30 Apr 2024 | Done; two extra workshops (GDPR, Impressum), 13% over budget | April |
+| WP2 Design | 1 Apr – 31 May 2024 | Done; extra revision round (CR-01, approved 15 May) | May |
+| WP3 Development and integrations | 1 May – 31 Jul 2024 | 85% done; JTL-Wawi API problems since June | Mid-Aug 2024 |
+| WP4 Data migration | 1 Jun – 31 Jul 2024 | Started late; 60% done | Mid-Aug 2024 |
+| WP5 Testing and quality checks | 1 Jul – 14 Aug 2024 | Only 20% done | Mid-Aug – 28 Aug 2024 |
+| **Launch (go-live)** | **15 Aug 2024** | | **29 Aug 2024** (2 weeks late) |
+| WP6 Aftercare and training (6 weeks after launch) | 15 Aug – 30 Sep 2024 | Not started | 29 Aug – ~10 Oct 2024 |
+| **Project end** | **30 Sep 2024** | | **~10 Oct 2024** |
+
+Key dates: 1 Apr 2024 project start · 15 May CR-01 approved (extra design
+round) · 20 Jun CR-02 requested (Klarna), awaiting sign-off · 31 Jul status
+report date (all actual costs, % complete, CPI and SPI are as of this date) ·
+29 Aug forecast launch · ~10 Oct forecast end.
 
 **The forecast is more likely to rise than fall.** Reaching 65,800 needs a
 cost efficiency (TCPI) of 0.90 on the remaining work, but only 0.86 has been
@@ -60,7 +79,7 @@ from the recalculated workbook.
 | Sheet | Contents |
 |---|---|
 | Dashboard | Cost and schedule RAG status, key figures, auto-ranked variances, two charts |
-| Settings | Dates, status date, hourly rate, contract budget, RAG thresholds |
+| Settings | Dates, status date, aftercare weeks, hourly rate, contract budget, RAG thresholds |
 | Budget | Work packages, approved CRs, reserve, reconciliation to contract value |
 | PlannedValue | Original plan + CR phasing (pulled from the change log) = revised baseline |
 | ActualCost | Monthly actuals with explanations; only months up to the status date count |
@@ -68,8 +87,8 @@ from the recalculated workbook.
 | Commitments | Ordered but not yet invoiced costs (EUR 4,000) |
 | EarnedValue | % complete (validated 0–100%), EV, CV, SV, CPI and SPI per work package |
 | Forecast | AC + ETC = EAC, overrun after reserve, forecast range, TCPI |
-| Schedule | Earned schedule and forecast launch date |
-| Checks | A: brief check figures (12, all PASS). B: model integrity (8, all PASS) |
+| Schedule | Earned schedule, forecast launch and end dates, plan vs actual / forecast per work package |
+| Checks | A: brief check figures (13, all PASS). B: model integrity (8, all PASS) |
 | RisksDecisions | Top 3 risks, a watch item, and 4 decisions with recommendations |
 
 Blue cells on a cream background are inputs. Everything else is a formula.
@@ -90,6 +109,8 @@ Blue cells on a cream background are inputs. Everything else is a formula.
   the plan after 4 months of actual time. The lag of 0.45 months × 31 days =
   14 days, so 15 Aug becomes 29 Aug. This assumes the lag does not grow;
   testing (WP5) is at SPI 0.60, so the date is at risk.
+- **Project end forecast:** aftercare (WP6) runs 6 weeks after go-live, so
+  the end moves with the launch: 29 Aug + 6 weeks = about 10 Oct 2024.
 
 ## Red-team review: weaknesses found and fixed
 

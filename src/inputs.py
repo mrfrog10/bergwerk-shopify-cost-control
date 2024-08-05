@@ -15,6 +15,7 @@ BASE = {
     "end": date(2024, 9, 30),
     "launch": date(2024, 8, 15),
     "status": date(2024, 7, 31),
+    "aftercare_weeks": 6,  # WP6 support after go-live
     "hourly_rate": 25,
     "contract_budget": 60000,
     "reserve": 4000,
@@ -38,6 +39,24 @@ BASE = {
          "Functional tests, payment tests, mobile checks", "Jul-Aug", 6000),
         ("WP6", "Launch, aftercare and training",
          "Go-live, 6 weeks of support, staff training", "Aug-Sep", 6000),
+    ],
+    # plan vs actual / forecast per work package, as of the status date:
+    # (planned start, planned finish, status at status date, forecast finish)
+    "wp_schedule": [
+        (date(2024, 4, 1), date(2024, 4, 30),
+         "Done in April; two extra workshops (GDPR, Impressum)", "Done"),
+        (date(2024, 4, 1), date(2024, 5, 31),
+         "Done in May; extra revision round (CR-01, approved 15 May)",
+         "Done"),
+        (date(2024, 5, 1), date(2024, 7, 31),
+         "85% done; JTL-Wawi API problems since June", "Mid-Aug 2024"),
+        (date(2024, 6, 1), date(2024, 7, 31),
+         "Started late; 60% done", "Mid-Aug 2024"),
+        (date(2024, 7, 1), date(2024, 8, 14),
+         "Only 20% done", "Mid-Aug to 28 Aug 2024"),
+        (date(2024, 8, 15), date(2024, 9, 30),
+         "Not started; 6 weeks after launch",
+         "29 Aug to ~10 Oct 2024"),
     ],
     "pv": [  # WP1..WP6 x Apr..Sep, original baseline
         [6000, 0, 0, 0, 0, 0],
