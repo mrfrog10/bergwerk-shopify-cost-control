@@ -126,4 +126,6 @@ def scenario_what_if():
     for i, v in enumerate([0, 0, 3600, 2100, 3900, 1700]):
         s["ac"][i][4] = v
     s["etc"] = [0, 0, 2600, 900, 1800, 4600]
+    # half of the QA freelancer contract was invoiced in August
+    s["commitments"][1] = ("Freelance QA tester contract", "WP5", 1000)
     return s
